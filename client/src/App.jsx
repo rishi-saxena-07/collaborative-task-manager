@@ -5,7 +5,7 @@ import Tasks from './pages/Tasks'
 import Trash from './pages/Trash'
 import TaskDetails from './pages/TaskDetails'
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom"
-import Toaster from 'sonner';
+import {Toaster} from 'sonner';
 
 function Layout(){
   const user = "";
