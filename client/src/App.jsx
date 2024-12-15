@@ -6,14 +6,16 @@ import Trash from './pages/Trash'
 import TaskDetails from './pages/TaskDetails'
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom"
 import {Toaster} from 'sonner';
+import { useSelector } from 'react-redux'
+import Sidebar from './components/Sidebar'
 
 function Layout(){
-  const user = "";
+  const {user} = useSelector((state)=>state.auth);
   const location = useLocation()
   return user ? (
 <div className='w-full h-screen flex flex-col md:flex-row'>
   <div className='h-screen w-1/5 bg-white sticky top-0 hidden md:block'>
- {/* <Sidebar /> */}
+ <Sidebar />
   </div>
   {/* <MobileSidebar /> */}
   <div className='flex-1 overflow-y-auto'>
