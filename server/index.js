@@ -17,7 +17,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://collaborative-task-manager.onrender.com","http://localhost:3000", "http://localhost:3001", "https://taskmanagment-mern.netlify.app/log-in"],
+    origin: ["https://collaborative-task-manager.onrender.com","http://localhost:3000", "http://localhost:3001", "https://taskmanagment-mern.netlify.app"],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
