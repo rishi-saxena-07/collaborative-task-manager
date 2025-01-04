@@ -7,15 +7,49 @@ import { getInitials } from "../utils";
 import clsx from "clsx";
 import ConfirmatioDialog, { UserAction } from "../components/Dialogs";
 import AddUser from "../components/AddUser";
+import { useGetTeamListQuery, useDeleteUserMutation, useUserActionMutation } from "../redux/slices/api/userApiSlice";
+import { toast } from "sonner";
 
 const Users = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
+  const {data, isLoading, refetch} = useGetTeamListQuery()
+  const [deleteUser] = useDeleteUserMutation();
+  const [userAction] = useUserActionMutation();
 
-  const userActionHandler = () => {};
-  const deleteHandler = () => {};
+  const userActionHandler = async () => {
+    try {
+      const result = await userAction({
+        isActive : !selected?.isActive,
+        id : selected?._id,
+      })
+      refetch();
+      toast.success(result.data.message);
+      setSelected(null)
+      setTimeout(()=>{
+        setOpenAction(false)
+      },400)
+    } catch (error) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error)
+    }
+  };
+  const deleteHandler = async () => {
+    try {
+      const result = await deleteUser(selected)
+      refetch();
+      toast.success("Deleted successfully");
+      setSelected(null)
+      setTimeout(()=>{
+        setOpenDialog(false)
+      },400)
+    } catch (error) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error)
+    }
+  };
 
   const deleteClick = (id) => {
     setSelected(id);
@@ -26,6 +60,11 @@ const Users = () => {
     setSelected(el);
     setOpen(true);
   };
+
+  const userStatusClick = (el) =>{
+    setSelected(el);
+    setOpenAction(true)
+  }
 
   const TableHeader = () => (
     <thead className='border-b border-gray-300'>
@@ -58,7 +97,7 @@ const Users = () => {
 
       <td>
         <button
-          // onClick={() => userStatusClick(user)}
+          onClick={() => userStatusClick(user)}
           className={clsx(
             "w-fit px-4 py-1 rounded-full",
             user?.isActive ? "bg-blue-200" : "bg-yellow-100"
@@ -95,7 +134,7 @@ const Users = () => {
             label='Add New User'
             icon={<IoMdAdd className='text-lg' />}
             className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5'
-            onClick={() => setOpen(true)}
+            onClick={() => { setOpen(true) }}
           />
         </div>
 
@@ -104,7 +143,7 @@ const Users = () => {
             <table className='w-full mb-5'>
               <TableHeader />
               <tbody>
-                {summary.users?.map((user, index) => (
+                {data?.map((user, index) => (
                   <TableRow key={index} user={user} />
                 ))}
               </tbody>
